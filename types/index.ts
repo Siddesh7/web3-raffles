@@ -13,6 +13,7 @@ export interface IRaffleCard {
   winner?: string;
   isAuctionCancelled?: boolean;
   raffleAddress?: string;
+  profile?: boolean;
 }
 
 export interface ICreateRaffleModal {

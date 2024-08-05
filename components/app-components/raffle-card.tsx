@@ -9,6 +9,8 @@ import {IRaffleCard} from "@/types";
 import moment from "moment";
 import {getNFTMetadata} from "@/lib/utils";
 import BuyButton from "./raffle-buy-button";
+import CancelRaffleButton from "./cancel-raffle-button";
+import PickWinnerButton from "./pick-winner-button";
 const RaffleCard: React.FC<IRaffleCard> = ({
   key,
   name,
@@ -23,12 +25,15 @@ const RaffleCard: React.FC<IRaffleCard> = ({
   winner,
   isAuctionCancelled,
   raffleAddress,
+  profile,
 }) => {
   const [copySuccess, setCopySuccess] = useState("");
   const [nftMetadata, setNftMetadata] = useState<any>({});
   const copyToClipboard = async () => {
     try {
-      await navigator.clipboard.writeText(`/marketplace/${contractAddress}`);
+      await navigator.clipboard.writeText(
+        `${process.env.NEXT_PUBLIC_HOST}/marketplace/${raffleAddress}`
+      );
       setCopySuccess("Copied!");
       setTimeout(() => setCopySuccess(""), 3000);
     } catch (err) {
@@ -64,7 +69,7 @@ const RaffleCard: React.FC<IRaffleCard> = ({
         contractAddress.split(":")[0],
         contractAddress.split(":")[1]
       );
-
+      console.log("nft", nft);
       setNftMetadata(nft);
     };
     getNFTDetails();
@@ -74,10 +79,7 @@ const RaffleCard: React.FC<IRaffleCard> = ({
       <div className="flex flex-row gap-4 p-6 bg-gradient-to-r from-[#F7F9FF] to-[#E0E9FF]">
         <div className=" w-[100px] h-[100px] rounded-lg overflow-hidden ">
           <Image
-            src={
-              nftMetadata?.image?.originalUrl ??
-              "https://dummyimage.com/200x200/000/fff"
-            }
+            src={nftMetadata?.image ?? "https://dummyimage.com/200x200/000/fff"}
             alt="raffle"
             width={200}
             height={200}
@@ -140,12 +142,19 @@ const RaffleCard: React.FC<IRaffleCard> = ({
       </div>
 
       <div className="p-6">
-        {raffleOpen && (
+        {!profile && raffleOpen && (
           <BuyButton
             raffleAddress={raffleAddress as `0x${string}`}
             paymentToken={paymentToken}
             ticketPrice={ticketPrice.toString()}
           />
+        )}
+
+        {profile && raffleOpen && (
+          <div className="flex flex-col gap-[10px] ">
+            <CancelRaffleButton raffleAddress={raffleAddress as any} />
+            <PickWinnerButton raffleAddress={raffleAddress as any} />
+          </div>
         )}
 
         {!raffleOpen && (

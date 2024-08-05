@@ -6,6 +6,7 @@ import {cn} from "@/lib/utils";
 import Navbar from "@/components/app-components/Navbar";
 import {Separator} from "@/components/ui/separator";
 import {Toaster} from "@/components/ui/toaster";
+import {AppProvider} from "./context/app-context";
 const inter = Inter({subsets: ["latin"], variable: "--font-sans"});
 
 export const metadata: Metadata = {
@@ -26,9 +27,11 @@ export default function RootLayout({
         )}
       >
         <PrivyAuthProvider>
-          <Navbar />
-          <Separator />
-          {children}
+          <AppProvider>
+            <Navbar />
+            <Separator />
+            {children}
+          </AppProvider>
         </PrivyAuthProvider>
         <Toaster />
       </body>

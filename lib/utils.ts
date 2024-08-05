@@ -6,14 +6,15 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 export async function getNFTMetadata(contractAddress: string, tokenId: string) {
-  return fetch(
-    `https://polygon-mainnet.g.alchemy.com/nft/v3/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}/getNFTMetadata?contractAddress=${contractAddress}&tokenId=${tokenId}&refreshCache=false`
-  )
-    .then((res) => res.json())
-    .catch((error) => {
-      console.error("Error fetching NFT metadata:", error);
-      throw error;
-    });
+  const apiUrl = `https://api.unstoppabledomains.com/metadata/${tokenId}`;
+  const data = await fetch(apiUrl, {
+    headers: {
+      Authorization: "Bearer vmyevtishk7lkofn7yur0inyeg9fhx5m2aowxjkglrsbh6kp",
+    },
+  }).then((res) => res.json());
+
+  console.log("data", data);
+  return data;
 }
 export function getTokenName(tokenAddress: string) {
   const tokenNames: {[key: string]: string} = {
@@ -23,22 +24,33 @@ export function getTokenName(tokenAddress: string) {
 }
 
 export const getNFTs = async (owner: string) => {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_ALCHEMY_RPC_URL}/getNFTsForOwner/?owner=${owner}`
+  const apiUrl = `https://api.unstoppabledomains.com/resolve/domains?owners=${owner}`;
+  const data = await fetch(apiUrl, {
+    headers: {
+      Authorization: "Bearer vmyevtishk7lkofn7yur0inyeg9fhx5m2aowxjkglrsbh6kp",
+    },
+  }).then((res) => res.json());
+  const nftsData = await Promise.all(
+    data.data.map(async (nft: any) => {
+      return {
+        domain: nft.id,
+        tokenId: nft.attributes.meta.tokenId,
+        image: await getNftImage(nft.id),
+      };
+    })
   );
-  const resJson = await res.json();
+  console.log("nftsData", nftsData);
+  return nftsData;
+};
 
-  const ownedNFTs = resJson.ownedNfts;
-  let domains: any[] = [];
-  if (ownedNFTs.length > 0) {
-    for (const nft of ownedNFTs) {
-      if (
-        nft.contract.address.toLowerCase() ===
-        UD_POLYGON_CONTRACT_ADDRESS.toLowerCase()
-      ) {
-        domains.push(nft);
-      }
-    }
-  }
-  return domains;
+export const getNftImage = async (domain: string) => {
+  const apiUrl = `https://api.unstoppabledomains.com/metadata/${domain}`;
+  const data = await fetch(apiUrl, {
+    headers: {
+      Authorization: "Bearer vmyevtishk7lkofn7yur0inyeg9fhx5m2aowxjkglrsbh6kp",
+    },
+  }).then((res) => res.json());
+
+  console.log("data", data);
+  return data.image;
 };

@@ -21,6 +21,7 @@ const ApproveDomainCard: React.FC<IApproveDomainCard> = ({
   const {writeContract, data, status, isPending, error} = useWriteContract();
 
   const approveToken = async () => {
+    console.log("tokenId", tokenId);
     console.log({
       abi: erc721Abi,
       address:

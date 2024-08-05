@@ -21,8 +21,8 @@ const CreateRaffleCard: React.FC<ICreateRaffleCard> = ({onSuccess, txData}) => {
       address: RAFFLE_FACTORY_ADDRESS,
       functionName: "deployRaffle",
       args: [
-        txData.domain.contract.address,
-        txData.domain.metadata.tokenId,
+        "0xa9a6A3626993D487d2Dbda3173cf58cA1a9D9e9f",
+        txData.domain.tokenId,
         txData.price * 10 ** 6,
         txData.totalTickets,
         true,
@@ -35,8 +35,8 @@ const CreateRaffleCard: React.FC<ICreateRaffleCard> = ({onSuccess, txData}) => {
       address: RAFFLE_FACTORY_ADDRESS,
       functionName: "deployRaffle",
       args: [
-        txData.domain.contract.address,
-        txData.domain.metadata.tokenId,
+        "0xa9a6A3626993D487d2Dbda3173cf58cA1a9D9e9f",
+        txData.domain.tokenId,
         txData.price * 10 ** 6,
         txData.totalTickets,
         true,

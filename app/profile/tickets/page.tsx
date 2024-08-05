@@ -32,12 +32,12 @@ const Marketplace = () => {
   const {data: allRaffles, isLoading} = useReadContract({
     abi: RAFFLE_FACTORY_ABI,
     address: RAFFLE_FACTORY_ADDRESS,
-    functionName: "getDeployedRaffle",
-    args: [address],
+    functionName: "getAllDeployedRaffles",
+
     chainId: 137,
   }) as {data: string[]; isLoading: boolean};
   const fetchAllInformation = async () => {
-    if (!allRaffles) return;
+    if (!allRaffles || !address) return;
     const rafflePromises = allRaffles.map((contract) =>
       publicClient.readContract({
         address: contract as `0x${string}`,
@@ -46,14 +46,33 @@ const Marketplace = () => {
       })
     );
     const raffles = await Promise.all(rafflePromises);
-    setRaffles(raffles);
+    console.log(raffles);
+
+    const ticketsOwned: any = await Promise.all(
+      allRaffles.map((contract) =>
+        publicClient.readContract({
+          address: contract as `0x${string}`,
+          abi: RAFFLE_ABI,
+          functionName: "balanceOf",
+          args: [address!],
+        })
+      )
+    );
+    let userTicketsRaffles: any[] = [];
+    for (let i = 0; i < raffles.length; i++) {
+      if (ticketsOwned[i] > 0) {
+        userTicketsRaffles.push(raffles[i]);
+      }
+    }
+
+    setRaffles(userTicketsRaffles);
   };
 
   const handleSearch = (e: any) => {};
 
   useEffect(() => {
     fetchAllInformation();
-  }, [allRaffles]);
+  }, [allRaffles, address]);
 
   //handle sort
   useEffect(() => {

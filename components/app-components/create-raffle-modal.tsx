@@ -14,7 +14,7 @@ import {
 import {format, set} from "date-fns";
 import {Calendar as CalendarIcon, CircleCheckBig} from "lucide-react";
 
-import {cn, getNFTs} from "@/lib/utils";
+import {cn, getNftImage, getNFTs} from "@/lib/utils";
 
 import {Calendar} from "@/components/ui/calendar";
 import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
@@ -64,8 +64,7 @@ const CreateRaffleModal: React.FC<ICreateRaffleModal> = ({onClose}) => {
   useEffect(() => {
     const filteredDomains = userDomains.filter((domain) => {
       return (
-        domain.metadata.name?.toLowerCase().includes(search.toLowerCase()) ??
-        false
+        domain.domain.toLowerCase().includes(search.toLowerCase()) ?? false
       );
     });
     filteredDomains.length > 0 && setFilteredDomains(filteredDomains);
@@ -74,7 +73,7 @@ const CreateRaffleModal: React.FC<ICreateRaffleModal> = ({onClose}) => {
     }
   }, [search]);
   return (
-    <main className="backdrop-filter backdrop-blur-lg bg-[rgba(215,210,210,0.5)] flex justify-center items-center h-screen  overflow-x-hidden">
+    <main className="backdrop-filter backdrop-blur-lg bg-[rgba(215,210,210,0.5)] flex justify-center items-center h-screen  overflow-x-hidden w-[96vw] m-auto">
       <Card className="w-[600px] h-[700px] p-8 flex flex-col overflow-x-hidden relative rounded-2xl">
         <X
           className="absolute right-4 top-4 cursor-pointer"
@@ -111,8 +110,7 @@ const CreateRaffleModal: React.FC<ICreateRaffleModal> = ({onClose}) => {
                     <div className="max-w-[80px] max-h-[80px] overflow-hidden px-2">
                       <Image
                         src={
-                          domain.metadata.image ??
-                          "https://dummyimage.com/80x80/000/fff"
+                          domain.image ?? "https://dummyimage.com/80x80/000/fff"
                         }
                         alt="logo"
                         width={80}
@@ -120,17 +118,16 @@ const CreateRaffleModal: React.FC<ICreateRaffleModal> = ({onClose}) => {
                         className="rounded-lg overflow-hidden object-cover"
                       />
                     </div>
-                    <div className="w-full flex flex-row justify-between items-center">
+                    <div className="w-full flex flex-row justify-between items-center px-2">
                       <div className="flex flex-col">
                         <p className="font-semibold text-lg text-[#4047F2]">
-                          {domain.metadata.name ?? "Unknown Domain"}
+                          {domain.domain ?? "Unknown Domain"}
                         </p>
                         <p className="font-medium text-sm text-[#7782A0]">
                           Polygon
                         </p>
                       </div>
-                      {userInput.domain?.metadata?.tokenId ===
-                        domain.metadata.tokenId && (
+                      {userInput.domain?.tokenId === domain.tokenId && (
                         <div className="flex-end justify-end pr-2">
                           <CircleCheckBig className="text-[#4047F2]" />
                         </div>
@@ -210,7 +207,7 @@ const CreateRaffleModal: React.FC<ICreateRaffleModal> = ({onClose}) => {
                 <div className="flex flex-col gap-4 mt-16 justify-center items-center">
                   <Image
                     src={
-                      userInput.domain?.metadata?.image ??
+                      userInput.domain?.image ??
                       "https://dummyimage.com/80x80/000/000"
                     }
                     alt="logo"
@@ -220,7 +217,7 @@ const CreateRaffleModal: React.FC<ICreateRaffleModal> = ({onClose}) => {
                   />
                   <div className="flex flex-col items-center justify-center gap-2">
                     <p className="text-[#4047F2] text-lg font-semibold text-center">
-                      {userInput.domain?.metadata?.name ?? "Unknown Domain"}
+                      {userInput.domain?.domain ?? "Unknown Domain"}
                     </p>
                   </div>
                 </div>
@@ -384,7 +381,7 @@ const CreateRaffleModal: React.FC<ICreateRaffleModal> = ({onClose}) => {
 
         {userInput.section === 2 && (
           <ApproveDomainCard
-            tokenId={userInput.domain.metadata.tokenId}
+            tokenId={userInput.domain.tokenId}
             onApprove={() => {
               console.log("approved");
               setUserInput({...userInput, section: userInput.section + 1});

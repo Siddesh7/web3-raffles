@@ -15,12 +15,14 @@ import {
 import {useAccount, useDisconnect} from "wagmi";
 import {HamburgerMenuIcon} from "@radix-ui/react-icons";
 import {EllipsisVertical} from "lucide-react";
+import {useAppContext} from "@/app/context/app-context";
+import Link from "next/link";
 
 const Navbar = () => {
   const {ready, authenticated, user, login, logout} = usePrivy();
   const {disconnect} = useDisconnect();
   const {address} = useAccount();
-
+  const {setShowRaffleCreateModal} = useAppContext();
   return (
     <div className="flex flex-row w-[96vw] py-8 items-center mx-auto">
       <Image src="/logo.png" alt="logo" width={200} height={200} />
@@ -28,6 +30,7 @@ const Navbar = () => {
         <Button
           variant={"link"}
           className=" flex md:flex font-medium text-[16px] text-[#5A637C]"
+          onClick={() => setShowRaffleCreateModal(true)}
         >
           Create Raffle
         </Button>
@@ -43,7 +46,7 @@ const Navbar = () => {
                 <Button
                   size={"icon"}
                   variant={"default"}
-                  className="md:hidden bg-transparent border-black border-[1px]"
+                  className="md:hidden bg-transparent border-black border-[1px] p-[1px]"
                   asChild
                 >
                   <HamburgerMenuIcon color="black" />
@@ -51,11 +54,14 @@ const Navbar = () => {
               </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>Profile</DropdownMenuItem>
-              <DropdownMenuItem>Billing</DropdownMenuItem>
-              <DropdownMenuItem>Team</DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href={`/profile/tickets`}>My Tickets</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                {" "}
+                <Link href={`/profile/raffles`}>My Raffles</Link>
+              </DropdownMenuItem>
+
               <DropdownMenuItem
                 onClick={() => {
                   logout();
