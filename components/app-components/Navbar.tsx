@@ -27,13 +27,15 @@ const Navbar = () => {
     <div className="flex flex-row w-[96vw] py-8 items-center mx-auto">
       <Image src="/logo.png" alt="logo" width={200} height={200} />
       <div className="ml-auto flex flex-row gap-2 ">
-        <Button
-          variant={"link"}
-          className=" flex md:flex font-medium text-[16px] text-[#5A637C]"
-          onClick={() => setShowRaffleCreateModal(true)}
-        >
-          Create Raffle
-        </Button>
+        {authenticated && (
+          <Button
+            variant={"link"}
+            className=" flex md:flex font-medium text-[16px] text-[#5A637C]"
+            onClick={() => setShowRaffleCreateModal(true)}
+          >
+            Create Raffle
+          </Button>
+        )}
         {!authenticated ? (
           <Button onClick={login}>Login</Button>
         ) : (
